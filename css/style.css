@@ -49,8 +49,9 @@ test-bg {
   
 }
 
-.keycap-wrapper:hover {
-  transform: translateY(1.3%);
+.keycap-wrapper:hover, 
+.keycap-wrapper:active {
+  transform: translateY(8%);
 }
 
 .keycap-wrapper .glow-effect {
@@ -63,13 +64,13 @@ test-bg {
 
 .keycap {
   position: absolute;
-  transition: transform 0.08s cubic-bezier(.4, 2, .6, 1), box-shadow 0.08s;
+  transition: transform 0.5s cubic-bezier(.4, 2, .6, 1), box-shadow 0.5s;
   cursor: pointer;
 }
 
 .keycap:hover,
 .keycap:active {
-  transform: translateY(8px);
+  transform: translateY(8%);
 }
 
 .name-position {
@@ -82,9 +83,11 @@ test-bg {
   left: 13%;
   top: 30%;
   z-index: 1;
+  height: calc(155 / 1080 * 100%) !important;
+  width: auto;
 }
 .top-about {
-  height: calc(155 / 1080 * 100%) !important;
+  height: -webkit-fill-available;
   width: auto !important;
 }
 
@@ -92,9 +95,11 @@ test-bg {
   left: 30.4%;
   top: 30%;
   z-index: 1;
+  height: calc(155 / 1080 * 100%) !important;
+  width: auto;
 }
 .top-projects {
-  height: calc(155 / 1080 * 100%) !important;
+  height: -webkit-fill-available;
   width: auto !important;
 }
 
@@ -118,9 +123,11 @@ test-bg {
   left: 20.1%;
   top: 42.3%;
   z-index: 2;
+  height: calc(157 / 1080 * 100%) !important;
+  width: auto;
 }
 .mid-experience {
-  height: calc(157 / 1080 * 100%) !important;
+  height: -webkit-fill-available;
   width: auto !important;
 }
 
@@ -160,9 +167,11 @@ test-bg {
   left: 27.3%;
   top: 55.2%;
   z-index: 3;
+  height: calc(160 / 1080 * 100%) !important;
+  width: auto;
 }
 .bottom-contact {
-  height: calc(160 / 1080 * 100%) !important;
+  height: -webkit-fill-available;
   width: auto !important;
 }
 

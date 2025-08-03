@@ -40,6 +40,27 @@ test-bg {
   will-change: transform;
 }
 
+.keycap-wrapper {
+  cursor: pointer;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(.4, 2, .6, 1), box-shadow 0.5s;
+  
+}
+
+.keycap-wrapper:hover {
+  transform: translateY(1.3%);
+}
+
+.keycap-wrapper .glow-effect {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.keycap-wrapper:hover .glow-effect {
+  opacity: 1;
+}
+
 .keycap {
   position: absolute;
   transition: transform 0.08s cubic-bezier(.4, 2, .6, 1), box-shadow 0.08s;
@@ -57,21 +78,24 @@ test-bg {
   top: 0%;
   z-index: 1;
 }
-
-.top-about {
-  height: calc(155 / 1080 * 100%) !important;
-  width: auto !important;
+.top-about-wrapper {
   left: 13%;
   top: 30%;
   z-index: 1;
 }
-
-.top-projects {
+.top-about {
   height: calc(155 / 1080 * 100%) !important;
   width: auto !important;
+}
+
+.top-projects-wrapper {
   left: 30.4%;
   top: 30%;
   z-index: 1;
+}
+.top-projects {
+  height: calc(155 / 1080 * 100%) !important;
+  width: auto !important;
 }
 
 .top-cat {
@@ -90,12 +114,14 @@ test-bg {
   z-index: 2;
 }
 
-.mid-experience {
-  height: calc(157 / 1080 * 100%) !important;
-  width: auto !important;
+.mid-experience-wrapper {
   left: 20.1%;
   top: 42.3%;
   z-index: 2;
+}
+.mid-experience {
+  height: calc(157 / 1080 * 100%) !important;
+  width: auto !important;
 }
 
 .mid-2 {
@@ -130,12 +156,14 @@ test-bg {
   z-index: 3;
 }
 
-.bottom-contact {
-  height: calc(160 / 1080 * 100%) !important;
-  width: auto !important;
+.bottom-contact-wrapper {
   left: 27.3%;
   top: 55.2%;
   z-index: 3;
+}
+.bottom-contact {
+  height: calc(160 / 1080 * 100%) !important;
+  width: auto !important;
 }
 
 .bottom-cover {

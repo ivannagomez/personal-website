@@ -134,7 +134,7 @@ test-bg {
 .mid-2 {
   height: calc(157 / 1080 * 100%) !important;
   width: auto !important;
-  left: 42.68%;
+  left: 42.7%;
   top: 42.3%;
   z-index: 2;
 }

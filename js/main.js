@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     keycap.addEventListener('click', handleKeycapClick);
   });
 
+  // Add click listeners for keycap wrappers
+  const wrappers = document.querySelectorAll('.keycap-wrapper');
+  wrappers.forEach(wrapper => {
+    wrapper.addEventListener('click', handleKeycapClick);
+  });
+
   // Initialize sticky navigation
   initStickyNav();
 });
@@ -56,7 +62,12 @@ function updateActiveNavLink(activeSection) {
 }
 
 function handleKeycapClick(event) {
-  const className = event.target.className;
+  // Find the closest wrapper element if clicking on an image inside a wrapper
+  const wrapper = event.target.closest('.keycap-wrapper');
+  
+  // Use wrapper if found, otherwise use the target itself (for standalone keycaps)
+  const element = wrapper || event.target;
+  const className = element.className;
   let sectionId = null;
 
   // Map keycap classes to section IDs

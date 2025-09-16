@@ -230,6 +230,7 @@ header h1 {
   justify-content: center;
   align-items: center;
   transform: translateY(-0px);
+  will-change: transform;
 }
 
 .content-container {
@@ -242,6 +243,8 @@ header h1 {
   display: flex;
   margin-top: 10vh;
   flex-direction: column;
+  opacity: 0;
+  transform: translateY(40px);
 }
 
 .content-title {
@@ -252,6 +255,8 @@ header h1 {
   font-weight: 600;
   margin: 20px;
   letter-spacing: 4px;
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 .content-text-block {
@@ -259,6 +264,8 @@ header h1 {
   font-family: "Montserrat", sans-serif;
   max-width: 1000px;
   margin: 0px 20px;
+  opacity: 0;
+  transform: translateY(25px);
 }
 
 .name-title {

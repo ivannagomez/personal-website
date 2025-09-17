@@ -145,18 +145,6 @@ function initScrollAnimations() {
     }
   });
 
-  // Keyboard keys subtle floating animation
-  gsap.utils.toArray('.keycap, .keycap-wrapper').forEach((keycap, index) => {
-    gsap.to(keycap, {
-      y: Math.random() * 6 - 3,
-      duration: 6 + Math.random() * 3,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut',
-      delay: index * 0.25
-    });
-  });
-
   // Scroll-triggered fade for nav
   ScrollTrigger.create({
     trigger: '.content-container',
@@ -165,7 +153,7 @@ function initScrollAnimations() {
       gsap.to('.sticky-nav', {
         opacity: 1,
         x: 0,
-        duration: 1.2,
+        duration: 1.0,
         ease: 'power1.out'
       });
     },

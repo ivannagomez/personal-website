@@ -220,6 +220,18 @@ function initMobileMenu() {
 
   if (!mobileMenuToggle) return;
 
+  // Ensure hamburger is visible on mobile immediately if in content area
+  if (window.innerWidth <= 768) {
+    const contentContainer = document.querySelector('.content-container');
+    if (contentContainer) {
+      const contentRect = contentContainer.getBoundingClientRect();
+      const shouldShowNav = contentRect.top <= 100 && contentRect.bottom > 200;
+      if (shouldShowNav) {
+        mobileMenuToggle.style.display = 'block';
+      }
+    }
+  }
+
   // Toggle mobile menu
   mobileMenuToggle.addEventListener('click', () => {
     const isOpen = mobileMenuToggle.classList.contains('active');

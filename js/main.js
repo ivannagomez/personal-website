@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize mobile menu
   initMobileMenu();
+
+  // Initialize scroll arrows
+  initScrollArrows();
 });
 
 function initStickyNav() {
@@ -65,6 +68,9 @@ function initStickyNav() {
       if (mobileMenuToggle) {
         mobileMenuToggle.style.display = isMobile ? 'block' : 'none';
       }
+
+      // Handle scroll arrows
+      updateScrollArrows(true);
     } else if (!shouldShowNav && isInContentArea) {
       isInContentArea = false;
 
@@ -82,6 +88,9 @@ function initStickyNav() {
           stickyNav.classList.remove('mobile-open');
         }
       }
+
+      // Handle scroll arrows
+      updateScrollArrows(false);
     }
   });
 }
@@ -282,6 +291,70 @@ function initMobileMenu() {
       }
     }, 250);
   });
+}
+
+function initScrollArrows() {
+  const scrollDownArrow = document.getElementById('scrollDownArrow');
+  const scrollUpArrow = document.getElementById('scrollUpArrow');
+  const contentContainer = document.querySelector('.content-container');
+  const landingContainer = document.querySelector('.landing-container');
+
+  if (!scrollDownArrow || !scrollUpArrow) return;
+
+  // Initially show down arrow
+  scrollDownArrow.classList.add('visible');
+
+  // Scroll down functionality
+  scrollDownArrow.addEventListener('click', () => {
+    gsap.to(window, {
+      duration: 2.5,
+      scrollTo: {
+        y: contentContainer,
+        offsetY: 0
+      },
+      ease: "power2.inOut"
+    });
+  });
+
+  // Scroll up functionality
+  scrollUpArrow.addEventListener('click', () => {
+    gsap.to(window, {
+      duration: 2.5,
+      scrollTo: {
+        y: landingContainer,
+        offsetY: 0
+      },
+      ease: "power2.inOut"
+    });
+  });
+
+  // Add touch support for mobile
+  scrollDownArrow.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    scrollDownArrow.click();
+  });
+
+  scrollUpArrow.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    scrollUpArrow.click();
+  });
+}
+
+function updateScrollArrows(inContentArea) {
+  const scrollDownArrow = document.getElementById('scrollDownArrow');
+  const scrollUpArrow = document.getElementById('scrollUpArrow');
+
+  if (!scrollDownArrow || !scrollUpArrow) return;
+
+  if (inContentArea) {
+    // In content area - show up arrow, hide down arrow
+    scrollDownArrow.classList.remove('visible');
+    scrollUpArrow.classList.add('visible');
+  } else {
+    // In landing area - show down arrow, hide up arrow
+    scrollDownArrow.classList.add('visible');
+    scrollUpArrow.classList.remove('visible');
+  }
 }
 
 function animateSection(section) {

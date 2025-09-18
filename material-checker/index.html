@@ -12,8 +12,8 @@
 
   <style>
     body {
-      background-color: #1a1a1a;
-      color: #e0e0e0;
+      background-color: rgb(237, 197, 179);
+      color: #333333;
       font-family: 'IBM Plex Mono', monospace;
       min-height: 100vh;
       display: flex;
@@ -33,7 +33,7 @@
     h1 {
       font-size: 2rem;
       margin-bottom: 2rem;
-      color: #c66746;
+      color: #d99680;
       font-weight: 300;
     }
 
@@ -45,15 +45,17 @@
 
     .search-bar {
       width: 100%;
+      max-width: 560px;
       padding: 15px 20px;
       font-size: 1rem;
       font-family: 'IBM Plex Mono', monospace;
-      background-color: #2a2a2a;
-      color: #e0e0e0;
-      border: 1px solid #444;
+      background-color: #ffffff;
+      color: #333333;
+      border: 1px solid #d99680;
       border-radius: 8px;
       outline: none;
       transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .search-bar:focus {
@@ -62,12 +64,12 @@
     }
 
     .search-bar::placeholder {
-      color: #666;
+      color: #ca8067ad;
     }
 
     .search-button {
       position: absolute;
-      right: -6%;
+      right: 5px;
       top: 50%;
       transform: translateY(-50%);
       padding: 10px 20px;
@@ -102,10 +104,12 @@
     .results-container {
       margin-top: 2rem;
       padding: 20px;
-      background-color: #2a2a2a;
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
       border-radius: 8px;
       min-height: 200px;
       display: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .results-container.show {
@@ -124,7 +128,7 @@
       <input
         type="text"
         class="search-bar"
-        placeholder="Enter material name or properties..."
+        placeholder="Enter web url for your clothing item..."
         id="searchInput"
       />
       <button class="search-button" id="searchButton">Search</button>

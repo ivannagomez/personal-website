@@ -1,6 +1,15 @@
+:root{
+  --accent:#5b8aff;   /* tweak to your pastel palette */
+  --line:#cb7d62;
+  --text:#91482e;
+  --muted:#b37a67;
+  --chip-bg:rgba(203, 125, 98, 0.33);
+  --chip-border:#dfe5ff;
+  --chip-text:#2a3a6b;
+}
 body {
   margin: 0;
-  font-family: "Montserrat", sans-serif;
+  font-family: "IBM Plex Mono", monospace;
   background-color: #dbb19e;
 }
 
@@ -258,10 +267,18 @@ header h1 {
   opacity: 0;
   transform: translateY(30px);
 }
+.subtitle {
+  font-size: 30px;
+  color: #cb7d62;
+  font-family: "Pixelify Sans", sans-serif;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-left: 20px;
+}
 
 .content-text-block {
   color: #91482e;
-  font-family: "Montserrat", sans-serif;
+  font-family: "IBM Plex Mono", monospace;
   max-width: 1000px;
   margin: 0px 20px;
   opacity: 0;
@@ -362,4 +379,57 @@ header h1 {
 .nav-list a:hover::before,
 .nav-list a.active::before {
   height: 100%;
+}
+.text-decor {
+  font-family: "IBM Plex Mono", monospace;
+}
+.experience-container {
+  display: flex;
+  justify-content: center;
+}
+.xp-title{
+  max-width: 880px;
+  margin: 0 auto 14px;
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+}
+
+.xp-list{
+  max-width: 880px;
+  list-style: none;
+  padding: 0;
+}
+
+.xp-item{
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  margin-bottom: 14px;
+  box-shadow: 0 6px 18px rgba(25,40,90,0.06);
+}
+
+.xp-head{ margin-bottom: 8px; }
+.role{ color: var(--text); font-size: 1.02rem; font-weight: 700; margin: 0; }
+.role .at{ color: var(--muted); font-weight: 600; }
+.meta{ color: var(--muted); font-size: .94rem; display: flex; gap: 10px; flex-wrap: wrap; }
+
+.labels{ display: flex; gap: 8px; padding: 8px 0 0; margin: 0; list-style: none; flex-wrap: wrap; }
+.chip{
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px;
+  padding: 6px 10px; 
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--text); 
+  font-weight: 600; 
+  font-size: .82rem;
+}
+.chip::before{ 
+  /*content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); opacity: .9; */
+}
+.summary{ margin: 6px 0 0; color: var(--text); line-height: 1.55; }
+
+@media (max-width: 640px){
+  .xp-item{ padding: 16px; }
 }

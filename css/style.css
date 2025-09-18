@@ -196,6 +196,15 @@ test-bg {
   z-index: 3;
 }
 
+.name-key {
+  position: absolute;
+  height: calc(400 / 1080 * 100%) !important;
+  width: auto !important;
+  left: 63%;
+  top: 30%;
+  z-index: 3;
+}
+
 .background {
   z-index: 0;
   width: 100%;

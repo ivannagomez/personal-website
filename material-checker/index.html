@@ -105,7 +105,7 @@
       margin-top: 2rem;
       padding: 20px;
       background-color: #ffffff;
-      border: 1px solid #e0e0e0;
+      border: 1px solid #d99680;
       border-radius: 8px;
       min-height: 200px;
       display: none;
@@ -115,11 +115,70 @@
     .results-container.show {
       display: block;
     }
+
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #c66746;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .result-content {
+      text-align: left;
+    }
+
+    .result-section {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .result-section:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .result-section strong {
+      color: #c66746;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .result-section p {
+      margin: 0;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .result-content h3 {
+      text-align: center;
+      font-weight: 400;
+    }
+
+    .result-content ul {
+      padding-left: 20px;
+      color: #555;
+    }
+
+    .result-content ul li {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 
 <body>
-  <a href="/" class="back-link">← back to main</a>
+  <a href="/" class="back-link"><< back to main</a>
 
   <div class="container">
     <h1>material checker</h1>
@@ -134,31 +193,414 @@
       <button class="search-button" id="searchButton">Search</button>
     </div>
 
+    <div style="margin-top: 15px; text-align: center;">
+      <button
+        id="manualToggle"
+        style="background: none; border: none; color: #c66746; text-decoration: underline; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;"
+        onclick="toggleManualInput()"
+      >
+        Can't fetch automatically? Enter details manually
+      </button>
+    </div>
+
+    <div id="manualInput" style="display: none; margin-top: 20px;">
+      <textarea
+        id="manualDetails"
+        placeholder="Paste the product details here (materials, price, description)..."
+        style="width: 100%; height: 150px; padding: 15px; font-family: 'IBM Plex Mono', monospace; border: 1px solid #d99680; border-radius: 8px; resize: vertical;"
+      ></textarea>
+      <button
+        id="analyzeManual"
+        style="margin-top: 10px; padding: 10px 20px; background-color: #c66746; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;"
+      >
+        Analyze Manual Input
+      </button>
+    </div>
+
     <div class="results-container" id="results">
       <!-- Results will appear here -->
     </div>
   </div>
 
-  <script>
+  <script type="module">
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
     const resultsContainer = document.getElementById('results');
 
-    function performSearch() {
-      const query = searchInput.value.trim();
-      if (query) {
-        resultsContainer.classList.add('show');
-        resultsContainer.innerHTML = `<p>Searching for: "${query}"</p>`;
-        // Add your search logic here
+    // OpenAI API configuration
+    const OPENAI_API_KEY = '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';
+
+    async function fetchWebpageContent(url) {
+      console.log('Fetching webpage content for:', url);
+
+      // Using a CORS proxy to fetch the webpage
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+      try {
+        const response = await fetch(proxyUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch webpage: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const htmlContent = data.contents;
+
+        console.log('Fetched HTML length:', htmlContent.length);
+
+        // Extract text content and look for material information
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+
+        // Try to find material information in common locations
+        let materialInfo = '';
+
+        // Look for common material-related keywords in the text
+        const textContent = doc.body.innerText || doc.body.textContent || '';
+        const lines = textContent.split('\n');
+
+        // Find lines containing material keywords and percentages
+        const materialKeywords = ['cotton', 'polyester', 'wool', 'silk', 'nylon', 'rayon', 'spandex', 'elastane', 'viscose', 'linen', 'acrylic', 'material', 'fabric', 'composition', 'details', 'care', '%'];
+
+        // Also look for percentage patterns
+        const percentagePattern = /\d+%\s*\w+/gi;
+
+        lines.forEach(line => {
+          const lowerLine = line.toLowerCase();
+          // Check if line contains material keywords or percentage patterns
+          if ((materialKeywords.some(keyword => lowerLine.includes(keyword)) || percentagePattern.test(line)) && line.length < 300) {
+            materialInfo += line + '\n';
+          }
+        });
+
+        // Try to find specific material composition patterns
+        const materialPatterns = textContent.match(/\d+%\s*[a-zA-Z]+/gi) || [];
+        if (materialPatterns.length > 0) {
+          materialInfo += '\nDetected composition: ' + materialPatterns.join(', ') + '\n';
+        }
+
+        // Also try to get product title and price
+        const title = doc.querySelector('h1')?.innerText || doc.querySelector('[class*="product-title"]')?.innerText || '';
+        const price = doc.querySelector('[class*="price"]')?.innerText || '';
+
+        console.log('Found material info:', materialInfo.substring(0, 500));
+
+        return {
+          materialInfo: materialInfo.substring(0, 2000), // Limit to prevent token overflow
+          title: title,
+          price: price,
+          fullText: textContent.substring(0, 5000) // Backup full text
+        };
+      } catch (error) {
+        console.error('Error fetching webpage:', error);
+        throw error;
       }
     }
 
+    async function analyzeMaterials(url) {
+      console.log('Starting analysis for URL:', url);
+
+      // First, fetch the webpage content
+      let webpageData;
+      try {
+        webpageData = await fetchWebpageContent(url);
+      } catch (error) {
+        console.error('Failed to fetch webpage:', error);
+        throw new Error('Unable to fetch the webpage. The site may be blocking automated requests.');
+      }
+
+      const prompt = `Analyze this clothing product information:
+
+URL: ${url}
+Product Title: ${webpageData.title}
+Price: ${webpageData.price}
+
+Material/Details Information Found:
+${webpageData.materialInfo}
+
+Additional Context:
+${webpageData.fullText.substring(0, 1000)}
+
+Please analyze the materials and provide a JSON response with exactly this format:
+{
+  "itemType": "the type of clothing item",
+  "materials": "list all materials and percentages found (e.g., '60% Cotton, 40% Polyester')",
+  "analysis": "2-3 sentences analyzing if this seems like good quality materials for the price or if it appears to be fast fashion",
+  "found": true/false (whether you found material information)
+}
+
+If no clear material information is found, set "found" to false.`;
+
+      try {
+        console.log('Calling OpenAI API...');
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a fashion material expert that analyzes clothing items to determine their material composition and quality. Always provide accurate material percentages if found in the text.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+            temperature: 0.3,
+            max_tokens: 500
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('OpenAI API error:', errorData);
+          throw new Error(`API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+        }
+
+        const data = await response.json();
+        console.log('OpenAI response:', data);
+        const content = data.choices[0].message.content;
+
+        // Try to parse as JSON, fallback to text if it fails
+        try {
+          const parsed = JSON.parse(content);
+          console.log('Parsed result:', parsed);
+          return parsed;
+        } catch (parseError) {
+          console.error('Failed to parse JSON response:', parseError);
+          console.log('Raw content:', content);
+          // If not valid JSON, create a structured response from the text
+          return {
+            itemType: "Unknown",
+            materials: content,
+            analysis: "Unable to parse structured data from API response",
+            found: false
+          };
+        }
+      } catch (error) {
+        console.error('Error analyzing materials:', error);
+        throw error;
+      }
+    }
+
+    async function performSearch() {
+      const url = searchInput.value.trim();
+
+      if (!url) {
+        resultsContainer.innerHTML = `<p style="color: #c66746;">Please enter a URL</p>`;
+        resultsContainer.classList.add('show');
+        return;
+      }
+
+      // Validate URL
+      try {
+        new URL(url);
+      } catch {
+        resultsContainer.innerHTML = `<p style="color: #c66746;">Please enter a valid URL</p>`;
+        resultsContainer.classList.add('show');
+        return;
+      }
+
+      // Show loading state
+      resultsContainer.innerHTML = `
+        <div style="text-align: center;">
+          <p style="margin-bottom: 20px;">Analyzing materials...</p>
+          <div class="loader"></div>
+        </div>
+      `;
+      resultsContainer.classList.add('show');
+      searchButton.disabled = true;
+      searchButton.textContent = 'Analyzing...';
+
+      try {
+        const result = await analyzeMaterials(url);
+
+        if (result.found) {
+          resultsContainer.innerHTML = `
+            <div class="result-content">
+              <h3 style="color: #c66746; margin-bottom: 15px;">Material Analysis</h3>
+
+              <div class="result-section">
+                <strong>Item Type:</strong>
+                <p>${result.itemType}</p>
+              </div>
+
+              <div class="result-section">
+                <strong>Materials:</strong>
+                <p>${result.materials}</p>
+              </div>
+
+              <div class="result-section">
+                <strong>Quality Assessment:</strong>
+                <p>${result.analysis}</p>
+              </div>
+            </div>
+          `;
+        } else {
+          resultsContainer.innerHTML = `
+            <div class="result-content">
+              <h3 style="color: #c66746; margin-bottom: 15px;">Unable to Find Materials</h3>
+              <p>Could not find material information on this page. This often happens with sites like Urban Outfitters that load content dynamically.</p>
+              <p style="margin-top: 15px; font-weight: bold;">Try this instead:</p>
+              <ol style="text-align: left; margin-top: 10px;">
+                <li>Go to the product page</li>
+                <li>Find the "Details" or "Materials" section</li>
+                <li>Copy that information</li>
+                <li>Click "Enter details manually" below and paste it</li>
+              </ol>
+              <p style="margin-top: 15px;">
+                <button
+                  onclick="toggleManualInput()"
+                  style="padding: 8px 15px; background-color: #c66746; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;"
+                >
+                  Enter Details Manually
+                </button>
+              </p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        resultsContainer.innerHTML = `
+          <div class="result-content">
+            <h3 style="color: #c66746; margin-bottom: 15px;">Error</h3>
+            <p>An error occurred while analyzing the URL. Please try again.</p>
+            <p style="font-size: 0.9em; color: #999; margin-top: 10px;">${error.message}</p>
+          </div>
+        `;
+      } finally {
+        searchButton.disabled = false;
+        searchButton.textContent = 'Search';
+      }
+    }
+
+    // Toggle manual input section
+    window.toggleManualInput = function() {
+      const manualInput = document.getElementById('manualInput');
+      const isHidden = manualInput.style.display === 'none';
+      manualInput.style.display = isHidden ? 'block' : 'none';
+    };
+
+    // Analyze manual input
+    async function analyzeManualInput() {
+      const manualDetails = document.getElementById('manualDetails').value.trim();
+
+      if (!manualDetails) {
+        resultsContainer.innerHTML = `<p style="color: #c66746;">Please enter product details</p>`;
+        resultsContainer.classList.add('show');
+        return;
+      }
+
+      // Show loading state
+      resultsContainer.innerHTML = `
+        <div style="text-align: center;">
+          <p style="margin-bottom: 20px;">Analyzing materials...</p>
+          <div class="loader"></div>
+        </div>
+      `;
+      resultsContainer.classList.add('show');
+
+      const prompt = `Analyze this clothing product information:
+
+Product Details:
+${manualDetails}
+
+Please analyze the materials and provide a JSON response with exactly this format:
+{
+  "itemType": "the type of clothing item (e.g., sweater, shirt, dress)",
+  "materials": "list all materials and percentages found (e.g., '60% Cotton, 40% Polyester')",
+  "analysis": "2-3 sentences analyzing if this seems like good quality materials for the price or if it appears to be fast fashion",
+  "found": true/false (whether you found material information)
+}
+
+Look for any percentage patterns like "100% cotton" or material mentions. If no clear material information is found, set "found" to false.`;
+
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',  // Using 3.5 for faster response
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a fashion material expert that analyzes clothing items to determine their material composition and quality. Extract material percentages accurately from the text provided.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+            temperature: 0.3,
+            max_tokens: 500
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`API error: ${errorData.error?.message || 'Unknown error'}`);
+        }
+
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+        const result = JSON.parse(content);
+
+        if (result.found) {
+          resultsContainer.innerHTML = `
+            <div class="result-content">
+              <h3 style="color: #c66746; margin-bottom: 15px;">Material Analysis</h3>
+
+              <div class="result-section">
+                <strong>Item Type:</strong>
+                <p>${result.itemType}</p>
+              </div>
+
+              <div class="result-section">
+                <strong>Materials:</strong>
+                <p>${result.materials}</p>
+              </div>
+
+              <div class="result-section">
+                <strong>Quality Assessment:</strong>
+                <p>${result.analysis}</p>
+              </div>
+            </div>
+          `;
+        } else {
+          resultsContainer.innerHTML = `
+            <div class="result-content">
+              <h3 style="color: #c66746; margin-bottom: 15px;">Limited Analysis</h3>
+              <p>Could not find clear material information in the provided text.</p>
+              <p style="margin-top: 10px;">Please make sure to include the materials section from the product page.</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        resultsContainer.innerHTML = `
+          <div class="result-content">
+            <h3 style="color: #c66746; margin-bottom: 15px;">Error</h3>
+            <p>An error occurred while analyzing the text.</p>
+            <p style="font-size: 0.9em; color: #999; margin-top: 10px;">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Event listeners
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         performSearch();
       }
     });
+
+    document.getElementById('analyzeManual').addEventListener('click', analyzeManualInput);
   </script>
 </body>
 

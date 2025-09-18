@@ -3,12 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const keycaps = document.querySelectorAll('.keycap');
   keycaps.forEach(keycap => {
     keycap.addEventListener('click', handleKeycapClick);
+    // Add touch support for better mobile responsiveness
+    keycap.addEventListener('touchend', handleKeycapClick);
   });
 
   // Add click listeners for keycap wrappers
   const wrappers = document.querySelectorAll('.keycap-wrapper');
   wrappers.forEach(wrapper => {
     wrapper.addEventListener('click', handleKeycapClick);
+    // Add touch support for better mobile responsiveness
+    wrapper.addEventListener('touchend', handleKeycapClick);
   });
 
   // Initialize sticky navigation
@@ -93,9 +97,22 @@ function updateActiveNavLink(activeSection) {
 }
 
 function handleKeycapClick(event) {
+  // Prevent default behavior and stop propagation
+  event.preventDefault();
+  event.stopPropagation();
+
+  // Prevent duplicate events from both click and touchend
+  if (event.type === 'touchend') {
+    // For touch events, prevent the subsequent click event
+    event.target.style.pointerEvents = 'none';
+    setTimeout(() => {
+      event.target.style.pointerEvents = 'auto';
+    }, 300);
+  }
+
   // Find the closest wrapper element if clicking on an image inside a wrapper
   const wrapper = event.target.closest('.keycap-wrapper');
-  
+
   // Use wrapper if found, otherwise use the target itself (for standalone keycaps)
   const element = wrapper || event.target;
   const className = element.className;

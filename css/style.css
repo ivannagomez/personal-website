@@ -61,16 +61,32 @@ test-bg {
   
 }
 
-.keycap-wrapper:hover, 
 .keycap-wrapper:active {
   transform: translateY(8%);
+}
+
+/* Only apply hover effects on devices that support hovering */
+@media (hover: hover) {
+  .keycap-wrapper:hover {
+    transform: translateY(8%);
+  }
+
+  .keycap-wrapper:hover .glow-effect {
+    opacity: 1;
+  }
+
+  .keycap:hover {
+    transform: translateY(8%);
+  }
 }
 
 .keycap-wrapper .glow-effect {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-.keycap-wrapper:hover .glow-effect {
+
+/* Show glow effect on active for touch devices */
+.keycap-wrapper:active .glow-effect {
   opacity: 1;
 }
 
@@ -80,7 +96,6 @@ test-bg {
   cursor: pointer;
 }
 
-.keycap:hover,
 .keycap:active {
   transform: translateY(8%);
 }

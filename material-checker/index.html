@@ -227,8 +227,8 @@
     const searchButton = document.getElementById('searchButton');
     const resultsContainer = document.getElementById('results');
 
-    // OpenAI API configuration - will be fetched from server
-    let OPENAI_API_KEY = '';
+    // OpenAI API configuration
+    const OPENAI_API_KEY = '';
 
     async function fetchWebpageContent(url) {
       console.log('Fetching webpage content for:', url);
@@ -546,8 +546,16 @@ Look for any percentage patterns like "100% cotton" or material mentions. If no 
         }
 
         const data = await response.json();
+        console.log('API Response:', data);
         const content = data.choices[0].message.content;
-        const result = JSON.parse(content);
+
+        let result;
+        try {
+          result = JSON.parse(content);
+        } catch (parseError) {
+          console.error('Failed to parse JSON:', content);
+          throw new Error('Failed to parse API response. Please try again.');
+        }
 
         if (result.found) {
           resultsContainer.innerHTML = `

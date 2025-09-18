@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize GSAP scroll animations
   initScrollAnimations();
+
+  // Initialize mobile menu
+  initMobileMenu();
 });
 
 function initStickyNav() {
@@ -36,20 +39,45 @@ function initStickyNav() {
 
   // Scroll listener for showing/hiding nav
   let isInContentArea = false;
-  
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+
   window.addEventListener('scroll', () => {
     const contentRect = contentContainer.getBoundingClientRect();
-    
+
     // Show nav only when we're actually inside the content container area
     // Check if content container is visible and we've scrolled past its top
     const shouldShowNav = contentRect.top <= 100 && contentRect.bottom > 200;
-    
+    const isMobile = window.innerWidth <= 768;
+
     if (shouldShowNav && !isInContentArea) {
       isInContentArea = true;
-      stickyNav.classList.add('visible');
+
+      // Only add visible class on desktop
+      if (!isMobile) {
+        stickyNav.classList.add('visible');
+      }
+
+      // Show hamburger button on mobile
+      if (mobileMenuToggle) {
+        mobileMenuToggle.style.display = isMobile ? 'block' : 'none';
+      }
     } else if (!shouldShowNav && isInContentArea) {
       isInContentArea = false;
-      stickyNav.classList.remove('visible');
+
+      // Remove visible class on desktop
+      if (!isMobile) {
+        stickyNav.classList.remove('visible');
+      }
+
+      // Hide hamburger button when scrolling up
+      if (mobileMenuToggle) {
+        mobileMenuToggle.style.display = 'none';
+        // Also close the menu if it's open
+        if (isMobile && stickyNav.classList.contains('mobile-open')) {
+          mobileMenuToggle.classList.remove('active');
+          stickyNav.classList.remove('mobile-open');
+        }
+      }
     }
   });
 }
@@ -165,6 +193,65 @@ function initScrollAnimations() {
         ease: 'power1.in'
       });
     }
+  });
+}
+
+function initMobileMenu() {
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const stickyNav = document.getElementById('stickyNav');
+  const navLinks = document.querySelectorAll('.nav-list a');
+
+  if (!mobileMenuToggle) return;
+
+  // Toggle mobile menu
+  mobileMenuToggle.addEventListener('click', () => {
+    const isOpen = mobileMenuToggle.classList.contains('active');
+
+    if (isOpen) {
+      mobileMenuToggle.classList.remove('active');
+      stickyNav.classList.remove('mobile-open');
+    } else {
+      mobileMenuToggle.classList.add('active');
+      stickyNav.classList.add('mobile-open');
+    }
+  });
+
+  // Close menu when clicking a link
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        mobileMenuToggle.classList.remove('active');
+        stickyNav.classList.remove('mobile-open');
+      }
+    });
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768) {
+      if (!stickyNav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        mobileMenuToggle.classList.remove('active');
+        stickyNav.classList.remove('mobile-open');
+      }
+    }
+  });
+
+  // Handle resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (window.innerWidth > 768) {
+        // Switching to desktop
+        mobileMenuToggle.classList.remove('active');
+        stickyNav.classList.remove('mobile-open');
+        mobileMenuToggle.style.display = 'none';
+      } else {
+        // Switching to mobile - ensure menu is closed
+        mobileMenuToggle.classList.remove('active');
+        stickyNav.classList.remove('mobile-open');
+      }
+    }, 250);
   });
 }
 

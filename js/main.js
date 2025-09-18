@@ -347,13 +347,21 @@ function updateScrollArrows(inContentArea) {
   if (!scrollDownArrow || !scrollUpArrow) return;
 
   if (inContentArea) {
-    // In content area - show up arrow, hide down arrow
+    // In content area - hide down arrow first, then show up arrow
     scrollDownArrow.classList.remove('visible');
-    scrollUpArrow.classList.add('visible');
+
+    // Wait for down arrow to fade out before showing up arrow
+    setTimeout(() => {
+      scrollUpArrow.classList.add('visible');
+    }, 200);
   } else {
-    // In landing area - show down arrow, hide up arrow
-    scrollDownArrow.classList.add('visible');
+    // In landing area - hide up arrow first, then show down arrow
     scrollUpArrow.classList.remove('visible');
+
+    // Wait for up arrow to fade out before showing down arrow
+    setTimeout(() => {
+      scrollDownArrow.classList.add('visible');
+    }, 200);
   }
 }
 

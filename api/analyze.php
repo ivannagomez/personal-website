@@ -16,7 +16,7 @@ if (!$apiKey) {
 // Get POST data
 $input = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($input['prompt']) || !isset($input['model'])) {
+if (!isset($input['messages']) || !isset($input['model'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing required parameters']);
     exit;

@@ -334,11 +334,14 @@ Please analyze the materials and provide a JSON response with exactly this forma
 {
   "itemType": "the type of clothing item",
   "materials": "list all materials and percentages found (e.g., '60% Cotton, 40% Polyester')",
-  "analysis": "2-3 sentences analyzing if this seems like good quality materials for the price or if it appears to be fast fashion",
+  "price": "extracted price or 'Not found'",
+  "weatherSuitability": "ideal weather/temperature range (e.g., 'Best for 40-60°F (5-15°C), ideal for spring/fall. Can extend to 30°F (-1°C) with thermal layers')",
+  "priceAssessment": "brief 1 sentence assessment if the price is fair for these materials",
+  "analysis": "2-3 sentences analyzing material quality for the intended weather conditions and if it appears to be fast fashion",
   "found": true/false (whether you found material information)
 }
 
-If no clear material information is found, set "found" to false.`;
+If no clear material information is found, set "found" to false but still try to assess based on item type.`;
 
       try {
         console.log('Calling OpenAI API...');
@@ -443,8 +446,27 @@ If no clear material information is found, set "found" to false.`;
                 <p>${result.materials}</p>
               </div>
 
+              ${result.price && result.price !== 'Not found' ? `
               <div class="result-section">
-                <strong>Quality Assessment:</strong>
+                <strong>Price:</strong>
+                <p>${result.price}</p>
+              </div>
+              ` : ''}
+
+              <div class="result-section">
+                <strong>Best Weather:</strong>
+                <p>${result.weatherSuitability || 'Weather assessment not available'}</p>
+              </div>
+
+              ${result.priceAssessment && result.price !== 'Not found' ? `
+              <div class="result-section">
+                <strong>Value Assessment:</strong>
+                <p>${result.priceAssessment}</p>
+              </div>
+              ` : ''}
+
+              <div class="result-section">
+                <strong>Overall Analysis:</strong>
                 <p>${result.analysis}</p>
               </div>
             </div>
@@ -521,11 +543,14 @@ Please analyze the materials and provide a JSON response with exactly this forma
 {
   "itemType": "the type of clothing item (e.g., sweater, shirt, dress)",
   "materials": "list all materials and percentages found (e.g., '60% Cotton, 40% Polyester')",
-  "analysis": "2-3 sentences analyzing if this seems like good quality materials for the price or if it appears to be fast fashion",
+  "price": "extracted price or 'Not found'",
+  "weatherSuitability": "ideal weather/temperature range (e.g., 'Best for 40-60°F (5-15°C), ideal for spring/fall. Can extend to 30°F (-1°C) with thermal layers')",
+  "priceAssessment": "brief 1 sentence assessment if the price is fair for these materials",
+  "analysis": "2-3 sentences analyzing material quality for the intended weather conditions and if it appears to be fast fashion",
   "found": true/false (whether you found material information)
 }
 
-Look for any percentage patterns like "100% cotton" or material mentions. If no clear material information is found, set "found" to false.`;
+Look for any percentage patterns like "100% cotton" or material mentions. If no clear material information is found, set "found" to false but still try to assess based on item type.`;
 
       try {
         const response = await fetch('/api/analyze.php', {
@@ -582,8 +607,27 @@ Look for any percentage patterns like "100% cotton" or material mentions. If no 
                 <p>${result.materials}</p>
               </div>
 
+              ${result.price && result.price !== 'Not found' ? `
               <div class="result-section">
-                <strong>Quality Assessment:</strong>
+                <strong>Price:</strong>
+                <p>${result.price}</p>
+              </div>
+              ` : ''}
+
+              <div class="result-section">
+                <strong>Best Weather:</strong>
+                <p>${result.weatherSuitability || 'Weather assessment not available'}</p>
+              </div>
+
+              ${result.priceAssessment && result.price !== 'Not found' ? `
+              <div class="result-section">
+                <strong>Value Assessment:</strong>
+                <p>${result.priceAssessment}</p>
+              </div>
+              ` : ''}
+
+              <div class="result-section">
+                <strong>Overall Analysis:</strong>
                 <p>${result.analysis}</p>
               </div>
             </div>

@@ -145,44 +145,108 @@
   <img class="pp-img" src="../models/imgs/transition-study/pp-9.png">
 
   <script>
-    // PP Image Sticky Animator - Handles character animations for sticky bottom images
+    // PP Image Animator - Shows pp-img based on which scene ID is in viewport
     document.addEventListener('DOMContentLoaded', () => {
-      const container = document.getElementById('container');
       const ppImages = document.querySelectorAll('.pp-img');
-      let currentScene = 0;
+      const sections = document.querySelectorAll('.bgd-section[id^="scene-"]');
+      let currentSceneNum = null;
 
       // Initialize - first pp-img visible, others hidden
       ppImages.forEach((ppImg, index) => {
         if (index === 0) {
           ppImg.classList.add('enter');
+          ppImg.classList.remove('exit');
         } else {
           ppImg.classList.add('exit');
+          ppImg.classList.remove('enter');
         }
       });
+      currentSceneNum = 1; // Start with scene 1
 
-      // Monitor scroll to detect scene changes
-      container.addEventListener('scroll', () => {
-        const scrollTop = container.scrollTop;
-        const viewportHeight = window.innerHeight;
-        const newScene = Math.round(scrollTop / viewportHeight);
+      console.log('PP Image Animator initialized with', ppImages.length, 'images and', sections.length, 'sections');
 
-        // If scene changed, update pp-img animations
-        if (newScene !== currentScene && newScene >= 0 && newScene < ppImages.length) {
-          // Animate current pp-img out (slide down from bottom)
-          if (ppImages[currentScene]) {
-            ppImages[currentScene].classList.remove('enter');
-            ppImages[currentScene].classList.add('exit');
+      // Create Intersection Observer to detect when scenes enter viewport
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Extract scene number from ID (e.g., "scene-3" → 3)
+            const sceneId = entry.target.id;
+            const match = sceneId.match(/scene-(\d+)/);
+
+            if (match) {
+              const sceneNum = parseInt(match[1], 10);
+              console.log(`Scene ${sceneNum} is now visible`);
+
+              // Only animate if this is a different scene
+              if (sceneNum !== currentSceneNum) {
+                console.log(`Switching from scene ${currentSceneNum} to scene ${sceneNum}`);
+
+                // Exit previous pp-img
+                if (currentSceneNum !== null && currentSceneNum > 0) {
+                  const prevPpImg = ppImages[currentSceneNum - 1];
+                  if (prevPpImg) {
+                    prevPpImg.classList.remove('enter');
+                    prevPpImg.classList.add('exit');
+                  }
+                }
+
+                // Enter new pp-img
+                const newPpImg = ppImages[sceneNum - 1];
+                if (newPpImg) {
+                  newPpImg.classList.remove('exit');
+                  newPpImg.classList.add('enter');
+                  console.log(`PP-${sceneNum} is now visible`);
+                }
+
+                currentSceneNum = sceneNum;
+              }
+            }
           }
+        });
+      }, {
+        threshold: 0.2, // Lower threshold to trigger earlier
+        rootMargin: '0px'
+      });
 
-          // Animate new pp-img in (slide up from bottom)
-          if (ppImages[newScene]) {
-            ppImages[newScene].classList.remove('exit');
-            ppImages[newScene].classList.add('enter');
+      // Observe all sections with scene IDs
+      sections.forEach(section => {
+        observer.observe(section);
+        console.log('Observing section:', section.id);
+      });
+
+      // Force check initial visibility after a short delay
+      setTimeout(() => {
+        sections.forEach(section => {
+          const rect = section.getBoundingClientRect();
+          if (rect.top >= 0 && rect.top < window.innerHeight) {
+            const match = section.id.match(/scene-(\d+)/);
+            if (match) {
+              const sceneNum = parseInt(match[1], 10);
+              if (sceneNum !== currentSceneNum) {
+                console.log(`Initial scene detected: ${sceneNum}`);
+
+                // Exit previous pp-img
+                if (currentSceneNum !== null && currentSceneNum > 0) {
+                  const prevPpImg = ppImages[currentSceneNum - 1];
+                  if (prevPpImg) {
+                    prevPpImg.classList.remove('enter');
+                    prevPpImg.classList.add('exit');
+                  }
+                }
+
+                // Enter new pp-img
+                const newPpImg = ppImages[sceneNum - 1];
+                if (newPpImg) {
+                  newPpImg.classList.remove('exit');
+                  newPpImg.classList.add('enter');
+                }
+
+                currentSceneNum = sceneNum;
+              }
+            }
           }
-
-          currentScene = newScene;
-        }
-      }, { passive: true });
+        });
+      }, 100);
     });
   </script>
 </body>

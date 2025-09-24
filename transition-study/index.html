@@ -60,10 +60,23 @@
       width: auto;
       min-width: 100%;
       object-position: center;
-      position: absolute;
+      position: fixed;
+      bottom: 0;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(100%);
+      opacity: 0;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s ease-in-out;
       z-index: 4;
+    }
+
+    .pp-img.enter {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .pp-img.exit {
+      transform: translateX(-50%) translateY(100%);
+      opacity: 0;
     }
 
     .bgd-section {
@@ -80,58 +93,97 @@
 
 <body>
   <div class="container" id="container">
-    <!-- Scene 1 -->
     <div class="scene" data-scene="1">
-     <section class="bgd-section">
+     <section id="scene-1" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-2.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-1.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-1.png">
      </section>
-     <section class="bgd-section">
+     <section id="scene-2" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-3.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-2.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-2.png">
     </section>
-     <section class="bgd-section">
+     <section id="scene-3" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-4.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-3.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-3.png">
      </section>
-     <section class="bgd-section">
+     <section id="scene-4" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-5.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-4.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-4.png">
      </section>
-     <section class="bgd-section">
+     <section id="scene-5" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-6.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-5.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-5.png">
      </section>
-     <section class="bgd-section">
+     <section id="scene-6" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-7.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-6.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-6.png">
      </section>
-     <section class="bgd-section">
+     <section id="scene-7" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-8.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-7.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-7.png">
      </section>
-     <section class="bgd-section">
+     <section id="scene-8" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-9.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-8.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-8.png">
      </section>
-     <section class="bgd-section">
+     <section id="scene-9" class="bgd-section">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-9.png">
-      <img class="pp-img transition-all" src="../models/imgs/transition-study/pp-9.png">
      </section>
     </div>
 
   </div>
 
+  <!-- PP Images - Fixed at bottom of viewport -->
+  <img class="pp-img" src="../models/imgs/transition-study/pp-1.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-2.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-3.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-4.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-5.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-6.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-7.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-8.png">
+  <img class="pp-img" src="../models/imgs/transition-study/pp-9.png">
+
   <script>
-    
+    // PP Image Sticky Animator - Handles character animations for sticky bottom images
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('container');
+      const ppImages = document.querySelectorAll('.pp-img');
+      let currentScene = 0;
+
+      // Initialize - first pp-img visible, others hidden
+      ppImages.forEach((ppImg, index) => {
+        if (index === 0) {
+          ppImg.classList.add('enter');
+        } else {
+          ppImg.classList.add('exit');
+        }
+      });
+
+      // Monitor scroll to detect scene changes
+      container.addEventListener('scroll', () => {
+        const scrollTop = container.scrollTop;
+        const viewportHeight = window.innerHeight;
+        const newScene = Math.round(scrollTop / viewportHeight);
+
+        // If scene changed, update pp-img animations
+        if (newScene !== currentScene && newScene >= 0 && newScene < ppImages.length) {
+          // Animate current pp-img out (slide down from bottom)
+          if (ppImages[currentScene]) {
+            ppImages[currentScene].classList.remove('enter');
+            ppImages[currentScene].classList.add('exit');
+          }
+
+          // Animate new pp-img in (slide up from bottom)
+          if (ppImages[newScene]) {
+            ppImages[newScene].classList.remove('exit');
+            ppImages[newScene].classList.add('enter');
+          }
+
+          currentScene = newScene;
+        }
+      }, { passive: true });
+    });
   </script>
 </body>
 

@@ -15,6 +15,11 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
 
   <style>
+    @font-face {
+      font-family: 'Yipes Regular';
+      src: url('../models/imgs/fonts/Yipes Regular.otf') format('opentype');
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -90,7 +95,6 @@
     .scene-text {
       position: fixed;
       top: 50%;
-      left: 10%;
       transform: translateY(-50%);
       z-index: 3 !important;
       max-width: 400px;
@@ -127,6 +131,33 @@
       opacity: 0.9;
     }
 
+    .landing-title-div {
+      top: 37%;
+      right: 5%;
+      color: #e1bc49;
+      width: 70%;
+      max-width: 70%;
+      text-align: end;
+      display: flex;
+      flex-direction: column;
+      align-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .landing-title-div h1 {
+      font-family: 'Yipes Regular', sans-serif;
+      font-size: 18vw;
+      letter-spacing: -0.05em;
+      line-height: 0.7;
+      font-weight: 100;
+    }
+    .landing-title-div p {
+      max-width: 535px;
+      width: 95%;
+      align-self: flex-end;
+      font-weight: bold;
+      line-height: 1.1;
+      font-size: 20px;
+    }
     
   </style>
 </head>
@@ -137,11 +168,14 @@
      <section id="scene-1" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-2.png">
       <img class="bgds-img transition-all" src="../models/imgs/transition-study/bgds-1.png">
-      <div class="scene-text" data-scene="1">
+      <div class="scene-text landing-title-div" data-scene="1">
         <!--<h2>The Beginning</h2>
         <p>A journey starts with a single step into the unknown. The world unfolds before us, revealing mysteries and wonders that await discovery.</p>
-      </div>-->
-      <img style="max-height: 100vh; max-width: 100vw;" src="../models/imgs/transition-study/text-1.png">
+        -->
+      <!--<img style="max-height: 100vh; max-width: 100vw;" src="../models/imgs/transition-study/text-1.png">-->
+      <h1>transitions</h1>
+      <p>an ivanna study on viewport transition coding, ai image model training, and creative world building</p>
+      </div>
      </section>
      <section id="scene-2" class="bgd-section">
       <img class="bgd-img" src="../models/imgs/transition-study/bgd-3.png">

@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -44,10 +45,12 @@
     }
 
     h1 {
-      font-size: 2rem;
+      font-family: 'Instrument Serif', serif;
+      font-size: 6rem;
       margin-bottom: 2rem;
-      color: #c66746;
-      font-weight: 300;
+      color: white;
+      font-weight: 700;
+      letter-spacing: -.025em;
     }
 
     .search-container {
@@ -59,52 +62,87 @@
     .search-bar {
       width: 100%;
       max-width: 560px;
-      padding: 15px 20px;
+      padding: 15px 12px 15px 20px;
       font-size: 1rem;
       font-family: 'IBM Plex Mono', monospace;
-      background-color: #ffffff;
-      color: #333333;
-      border: 1px solid #d99680;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #2c2c2c;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 40px;
       outline: none;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .search-bar:focus {
-      border-color: #c66746;
-      box-shadow: 0 0 0 2px rgba(198, 103, 70, 0.2);
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                  0 0 0 3px rgba(255, 255, 255, 0.0);
+      transform: translateY(-1px);
     }
 
     .search-bar::placeholder {
-      color: #ca8067ad;
+      color: rgba(60, 60, 60, 0.7);
+    }
+
+    .search-bar:focus + .search-button {
+      transform: translateY(-50%) translateY(-1px);
     }
 
     .search-button {
       position: absolute;
-      right: 5px;
+      right: 8px;
       top: 50%;
       transform: translateY(-50%);
-      padding: 10px 20px;
-      background-color: #c66746;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.9rem;
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 0px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .search-button:hover {
-      background-color: #a85537;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .search-button:active {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .search-icon {
+      width: 18px;
+      height: 18px;
+      stroke: rgba(60, 60, 60, 0.8);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      transition: stroke 0.3s ease;
+    }
+
+    .search-button:hover .search-icon {
+      stroke: rgba(40, 40, 40, 0.9);
     }
 
     .back-link {
       position: absolute;
       top: 30px;
       left: 30px;
-      color: #c66746;
+      color: #6a6fb0;
       text-decoration: none;
       z-index: 1;
       font-size: 0.9rem;
@@ -117,22 +155,37 @@
 
     .results-container {
       margin-top: 2rem;
-      padding: 20px;
-      background-color: #ffffff;
-      border: 1px solid #d99680;
-      border-radius: 8px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 16px;
       min-height: 200px;
       display: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .results-container.show {
       display: block;
+      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .loader {
       border: 3px solid #f3f3f3;
-      border-top: 3px solid #c66746;
+      border-top: 3px solid #6a6fb0;
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -161,7 +214,7 @@
     }
 
     .result-section strong {
-      color: #c66746;
+      color: #6a6fb0;
       display: block;
       margin-bottom: 8px;
       font-size: 0.9rem;
@@ -188,6 +241,64 @@
     .result-content ul li {
       margin-bottom: 5px;
     }
+
+    .glass-textarea {
+      width: 100%;
+      max-width: 560px;
+      padding: 15px;
+      font-size: 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #2c2c2c;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      outline: none;
+      resize: vertical;
+      min-height: 150px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-textarea:focus {
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                  0 0 0 3px rgba(106, 111, 176, 0);
+      transform: translateY(-1px);
+    }
+
+    .glass-textarea::placeholder {
+      color: rgba(60, 60, 60, 0.7);
+    }
+
+    .glass-button {
+      padding: 12px 24px;
+      background: rgba(106, 111, 176, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 16px rgba(106, 111, 176, 0.3);
+    }
+
+    .glass-button:hover {
+      background: rgba(106, 111, 176, 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(106, 111, 176, 0.4);
+    }
+
+    .glass-button:active {
+      transform: translateY(0);
+    }
   </style>
 </head>
 
@@ -213,7 +324,7 @@
   <a href="/" class="back-link"><< back to main</a>
 
   <div class="container">
-    <h1>material checker</h1>
+    <h1>Material Checker</h1>
 
     <div class="search-container">
       <input
@@ -222,13 +333,18 @@
         placeholder="Enter web url for your clothing item..."
         id="searchInput"
       />
-      <button class="search-button" id="searchButton">Search</button>
+      <button class="search-button" id="searchButton">
+        <svg class="search-icon" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </button>
     </div>
 
     <div style="margin-top: 15px; text-align: center;">
       <button
         id="manualToggle"
-        style="background: none; border: none; color: #c66746; text-decoration: underline; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;"
+        style="background: none; border: none; color: #6a6fb0; text-decoration: underline; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;"
         onclick="toggleManualInput()"
       >
         Can't fetch automatically? Enter details manually
@@ -238,12 +354,13 @@
     <div id="manualInput" style="display: none; margin-top: 20px;">
       <textarea
         id="manualDetails"
+        class="glass-textarea"
         placeholder="Paste the product details here (materials, price, description)..."
-        style="width: 560px; height: 150px; padding: 15px; font-family: 'IBM Plex Mono', monospace; border: 1px solid #d99680; border-radius: 8px; resize: vertical;"
       ></textarea>
       <button
         id="analyzeManual"
-        style="margin-top: 10px; padding: 10px 20px; background-color: #c66746; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;"
+        class="glass-button"
+        style="margin-top: 15px;"
       >
         Analyze Manual Input
       </button>
@@ -425,7 +542,7 @@ If no clear material information is found, set "found" to false but still try to
       const url = searchInput.value.trim();
 
       if (!url) {
-        resultsContainer.innerHTML = `<p style="color: #c66746;">Please enter a URL</p>`;
+        resultsContainer.innerHTML = `<p style="color: #6a6fb0;">Please enter a URL</p>`;
         resultsContainer.classList.add('show');
         return;
       }
@@ -434,7 +551,7 @@ If no clear material information is found, set "found" to false but still try to
       try {
         new URL(url);
       } catch {
-        resultsContainer.innerHTML = `<p style="color: #c66746;">Please enter a valid URL</p>`;
+        resultsContainer.innerHTML = `<p style="color: #6a6fb0;">Please enter a valid URL</p>`;
         resultsContainer.classList.add('show');
         return;
       }
@@ -456,7 +573,7 @@ If no clear material information is found, set "found" to false but still try to
         if (result.found) {
           resultsContainer.innerHTML = `
             <div class="result-content">
-              <h3 style="color: #c66746; margin-bottom: 15px;">Material Analysis</h3>
+              <h3 style="color: #6a6fb0; margin-bottom: 15px;">Material Analysis</h3>
 
               <div class="result-section">
                 <strong>Item Type:</strong>
@@ -496,7 +613,7 @@ If no clear material information is found, set "found" to false but still try to
         } else {
           resultsContainer.innerHTML = `
             <div class="result-content">
-              <h3 style="color: #c66746; margin-bottom: 15px;">Unable to Find Materials</h3>
+              <h3 style="color: #6a6fb0; margin-bottom: 15px;">Unable to Find Materials</h3>
               <p>Could not find material information on this page. This often happens with sites like Urban Outfitters that load content dynamically.</p>
               <p style="margin-top: 15px; font-weight: bold;">Try this instead:</p>
               <ol style="text-align: left; margin-top: 10px;">
@@ -508,7 +625,7 @@ If no clear material information is found, set "found" to false but still try to
               <p style="margin-top: 15px;">
                 <button
                   onclick="toggleManualInput()"
-                  style="padding: 8px 15px; background-color: #c66746; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;"
+                  style="padding: 8px 15px; background-color: #6a6fb0; color: white; border: none; border-radius: 4px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;"
                 >
                   Enter Details Manually
                 </button>
@@ -519,7 +636,7 @@ If no clear material information is found, set "found" to false but still try to
       } catch (error) {
         resultsContainer.innerHTML = `
           <div class="result-content">
-            <h3 style="color: #c66746; margin-bottom: 15px;">Error</h3>
+            <h3 style="color: #6a6fb0; margin-bottom: 15px;">Error</h3>
             <p>An error occurred while analyzing the URL. Please try again.</p>
             <p style="font-size: 0.9em; color: #999; margin-top: 10px;">${error.message}</p>
           </div>
@@ -542,7 +659,7 @@ If no clear material information is found, set "found" to false but still try to
       const manualDetails = document.getElementById('manualDetails').value.trim();
 
       if (!manualDetails) {
-        resultsContainer.innerHTML = `<p style="color: #c66746;">Please enter product details</p>`;
+        resultsContainer.innerHTML = `<p style="color: #6a6fb0;">Please enter product details</p>`;
         resultsContainer.classList.add('show');
         return;
       }
@@ -617,7 +734,7 @@ Look for any percentage patterns like "100% cotton" or material mentions. If no 
         if (result.found) {
           resultsContainer.innerHTML = `
             <div class="result-content">
-              <h3 style="color: #c66746; margin-bottom: 15px;">Material Analysis</h3>
+              <h3 style="color: #6a6fb0; margin-bottom: 15px;">Material Analysis</h3>
 
               <div class="result-section">
                 <strong>Item Type:</strong>
@@ -657,7 +774,7 @@ Look for any percentage patterns like "100% cotton" or material mentions. If no 
         } else {
           resultsContainer.innerHTML = `
             <div class="result-content">
-              <h3 style="color: #c66746; margin-bottom: 15px;">Limited Analysis</h3>
+              <h3 style="color: #6a6fb0; margin-bottom: 15px;">Limited Analysis</h3>
               <p>Could not find clear material information in the provided text.</p>
               <p style="margin-top: 10px;">Please make sure to include the materials section from the product page.</p>
             </div>
@@ -666,7 +783,7 @@ Look for any percentage patterns like "100% cotton" or material mentions. If no 
       } catch (error) {
         resultsContainer.innerHTML = `
           <div class="result-content">
-            <h3 style="color: #c66746; margin-bottom: 15px;">Error</h3>
+            <h3 style="color: #6a6fb0; margin-bottom: 15px;">Error</h3>
             <p>An error occurred while analyzing the text.</p>
             <p style="font-size: 0.9em; color: #999; margin-top: 10px;">${error.message}</p>
           </div>

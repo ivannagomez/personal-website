@@ -17,7 +17,7 @@
 
   <style>
     body {
-      background-color: rgb(237, 197, 179);
+      background-color: transparent;
       color: #333333;
       font-family: 'IBM Plex Mono', monospace;
       min-height: 100vh;
@@ -27,6 +27,7 @@
       justify-content: center;
       margin: 0;
       padding: 20px;
+      position: relative;
     }
 
     ::selection {
@@ -38,6 +39,8 @@
       width: 100%;
       max-width: 600px;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     h1 {
@@ -103,6 +106,7 @@
       left: 30px;
       color: #c66746;
       text-decoration: none;
+      z-index: 1;
       font-size: 0.9rem;
       transition: opacity 0.3s ease;
     }
@@ -188,6 +192,24 @@
 </head>
 
 <body>
+  <!-- Gradient Background System - Fixed for Static Scroll -->
+  <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; z-index: 0;">
+    <img
+      src="../models/imgs/gradient-1.png"
+      alt=""
+      style="position: absolute; opacity: 0.5; z-index: 1; transform: translate3d(-3%, 23%, 0px); width: 75vw; max-width: 1220px;"
+    />
+    <img
+      src="../models/imgs/gradient-2.png"
+      alt=""
+      style="position: absolute; opacity: 0.5; z-index: 1; transform: translate3d(45%, -7%, 0px); width: 75vw; max-width: 1220px;"
+    />
+    <!-- Gradient Filter Overlay -->
+    <div
+      style="background-image: linear-gradient(#f9ecff, #b3cafc); position: absolute; top: 0%; bottom: 0%; left: 0%; right: 0%;"
+    ></div>
+  </div>
+
   <a href="/" class="back-link"><< back to main</a>
 
   <div class="container">

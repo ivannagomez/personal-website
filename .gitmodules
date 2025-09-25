@@ -1,0 +1,3 @@
+[submodule "vendor/interactive-browser"]
+	path = vendor/interactive-browser
+	url = https://github.com/ivannagomez/interactive-tabs-test

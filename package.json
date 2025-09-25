@@ -5,7 +5,7 @@
     "heroku-postbuild": "cd vendor/interactive-browser && npm ci && npx vite build --mode production && cd - && rm -rf ./interactive-browser && mkdir -p ./interactive-browser && cp -r vendor/interactive-browser/dist/* ./interactive-browser/"
   },
   "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "node": "20.x",
+    "npm": "10.x"
   }
 }

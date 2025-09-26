@@ -414,3 +414,48 @@ function animateSection(section) {
     });
   }
 }
+
+// Art Gallery Lightbox Functionality
+function initLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  const closeBtn = document.querySelector('.close-lightbox');
+  const artPieces = document.querySelectorAll('.art-piece');
+
+  // Open lightbox when clicking on art pieces
+  artPieces.forEach(item => {
+    item.addEventListener('click', function() {
+      lightbox.classList.add('active');
+      lightboxImage.src = this.src;
+      lightboxImage.alt = this.alt;
+    });
+  });
+
+  // Close lightbox when clicking close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      lightbox.classList.remove('active');
+    });
+  }
+
+  // Close lightbox when clicking outside the image
+  if (lightbox) {
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === lightbox) {
+        lightbox.classList.remove('active');
+      }
+    });
+  }
+
+  // Close lightbox with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+      lightbox.classList.remove('active');
+    }
+  });
+}
+
+// Initialize lightbox when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  initLightbox();
+});

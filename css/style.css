@@ -734,3 +734,67 @@ header h1 {
 @media (max-width: 640px){
   .xp-item{ padding: 16px; }
 }
+
+/* Art Gallery Styles */
+.art-gallery-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.art-piece {
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  flex: 0 0 auto;
+}
+
+.art-piece:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+/* Lightbox Modal */
+.lightbox {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(219, 177, 158, 0.98);
+}
+
+.lightbox.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content {
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.close-lightbox {
+  position: absolute;
+  top: 30px;
+  right: 45px;
+  color: var(--text);
+  font-size: 36px;
+  font-family: "IBM Plex Mono", monospace;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.close-lightbox:hover {
+  opacity: 0.7;
+}
+

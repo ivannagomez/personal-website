@@ -2,7 +2,9 @@
   "name": "ivanna-personal-website",
   "version": "1.0.0",
   "scripts": {
-    "heroku-postbuild": "cd vendor/interactive-browser && npm install --include=dev && npx vite build --mode production && cd - && rm -rf ./interactive-browser && mkdir -p ./interactive-browser && cp -r vendor/interactive-browser/dist/* ./interactive-browser/"
+    "build-interactive-browser": "cd vendor/interactive-browser && npm install --include=dev && npx vite build --mode production && cd - && rm -rf ./interactive-browser && mkdir -p ./interactive-browser && cp -r vendor/interactive-browser/dist/* ./interactive-browser/",
+    "build-transitions": "cd vendor/transitions && npm install --include=dev && npx vite build --mode production && cd - && rm -rf ./transition-study && mkdir -p ./transition-study && cp -r vendor/transitions/dist/* ./transition-study/",
+    "heroku-postbuild": "npm run build-interactive-browser && npm run build-transitions"
   },
   "engines": {
     "node": "20.x",

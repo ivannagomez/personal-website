@@ -161,21 +161,18 @@ function showSection(sectionId) {
     // Reset animation states before triggering
     resetSectionAnimations(targetSection);
 
-    // Use GSAP for much smoother, slower scrolling
-    setTimeout(() => {
-      gsap.to(window, {
-        duration: 2.5,
-        scrollTo: {
-          y: targetSection,
-          offsetY: 0
-        },
-        ease: "power2.inOut",
-        onComplete: () => {
-          // Trigger animations after scroll completes for smoother experience
-          animateSectionSmooth(targetSection);
-        }
-      });
-    }, 50);
+    // Start scroll
+    gsap.to(window, {
+      duration: 2,
+      scrollTo: {
+        y: targetSection,
+        offsetY: 0
+      },
+      ease: "power1.inOut"
+    });
+
+    // Trigger content animations immediately (parallel with scroll)
+    animateSectionSmooth(targetSection);
   }
 }
 

@@ -59,9 +59,19 @@ function initStickyNav() {
     if (shouldShowNav && !isInContentArea) {
       isInContentArea = true;
 
-      // Only add visible class on desktop
+      // Smooth fade in on desktop
       if (!isMobile) {
         stickyNav.classList.add('visible');
+        gsap.set(stickyNav, { visibility: 'visible' });
+        gsap.fromTo(stickyNav,
+          { opacity: 0, x: -20 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.5,
+            ease: 'power1.out'
+          }
+        );
       }
 
       // Show hamburger button on mobile
@@ -74,9 +84,18 @@ function initStickyNav() {
     } else if (!shouldShowNav && isInContentArea) {
       isInContentArea = false;
 
-      // Remove visible class on desktop
+      // Smooth fade out on desktop
       if (!isMobile) {
-        stickyNav.classList.remove('visible');
+        gsap.to(stickyNav, {
+          opacity: 0,
+          x: -20,
+          duration: 0.5,
+          ease: 'power1.in',
+          onComplete: () => {
+            stickyNav.classList.remove('visible');
+            gsap.set(stickyNav, { visibility: 'hidden' });
+          }
+        });
       }
 
       // Hide hamburger button when scrolling up
@@ -349,21 +368,55 @@ function updateScrollArrows(inContentArea) {
   if (!scrollDownArrow || !scrollUpArrow) return;
 
   if (inContentArea) {
-    // In content area - hide down arrow first, then show up arrow
-    scrollDownArrow.classList.remove('visible');
+    // Smooth fade out down arrow
+    gsap.to(scrollDownArrow, {
+      opacity: 0,
+      scale: 0.8,
+      duration: 1,
+      ease: 'power1.in',
+      onComplete: () => {
+        scrollDownArrow.classList.remove('visible');
+        gsap.set(scrollDownArrow, { visibility: 'hidden' });
 
-    // Wait for down arrow to fade out before showing up arrow
-    setTimeout(() => {
-      scrollUpArrow.classList.add('visible');
-    }, 200);
+        // Smooth fade in up arrow
+        scrollUpArrow.classList.add('visible');
+        gsap.set(scrollUpArrow, { visibility: 'visible' });
+        gsap.fromTo(scrollUpArrow,
+          { opacity: 0, scale: 0.8 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            ease: 'power1.out'
+          }
+        );
+      }
+    });
   } else {
-    // In landing area - hide up arrow first, then show down arrow
-    scrollUpArrow.classList.remove('visible');
+    // Smooth fade out up arrow
+    gsap.to(scrollUpArrow, {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.5,
+      ease: 'power1.in',
+      onComplete: () => {
+        scrollUpArrow.classList.remove('visible');
+        gsap.set(scrollUpArrow, { visibility: 'hidden' });
 
-    // Wait for up arrow to fade out before showing down arrow
-    setTimeout(() => {
-      scrollDownArrow.classList.add('visible');
-    }, 200);
+        // Smooth fade in down arrow
+        scrollDownArrow.classList.add('visible');
+        gsap.set(scrollDownArrow, { visibility: 'visible' });
+        gsap.fromTo(scrollDownArrow,
+          { opacity: 0, scale: 0.8 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+            ease: 'power1.out'
+          }
+        );
+      }
+    });
   }
 }
 

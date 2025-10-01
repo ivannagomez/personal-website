@@ -158,6 +158,9 @@ function showSection(sectionId) {
     // Update active nav link
     updateActiveNavLink(sectionId);
 
+    // Reset animation states before triggering
+    resetSectionAnimations(targetSection);
+
     // Use GSAP for much smoother, slower scrolling
     setTimeout(() => {
       gsap.to(window, {
@@ -166,11 +169,13 @@ function showSection(sectionId) {
           y: targetSection,
           offsetY: 0
         },
-        ease: "power2.inOut"
+        ease: "power2.inOut",
+        onComplete: () => {
+          // Trigger animations after scroll completes for smoother experience
+          animateSectionSmooth(targetSection);
+        }
       });
-      // Trigger animations for the newly shown section
-      animateSection(targetSection);
-    }, 100);
+    }, 50);
   }
 }
 
@@ -412,6 +417,65 @@ function animateSection(section) {
         once: true
       }
     });
+  }
+}
+
+// Smoother animation function without ScrollTrigger for direct navigation
+function animateSectionSmooth(section) {
+  // Create a timeline for coordinated animations
+  const tl = gsap.timeline();
+
+  // Animate the content block itself
+  tl.to(section, {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    ease: 'power2.out'
+  });
+
+  // Animate title
+  const title = section.querySelector('.content-title');
+  if (title) {
+    tl.to(title, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, '-=0.6'); // Overlap with section animation
+  }
+
+  // Animate text blocks with smooth stagger
+  const textBlocks = section.querySelectorAll('.content-text-block');
+  if (textBlocks.length > 0) {
+    tl.to(textBlocks, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power2.out'
+    }, '-=0.4'); // Start before previous animation ends
+  }
+
+  return tl;
+}
+
+// Reset section animations before triggering new ones
+function resetSectionAnimations(section) {
+  // Kill any existing animations on this section
+  gsap.killTweensOf(section);
+  gsap.killTweensOf(section.querySelectorAll('.content-title, .content-text-block'));
+
+  // Set initial states
+  gsap.set(section, { opacity: 0, y: 30 });
+
+  const title = section.querySelector('.content-title');
+  if (title) {
+    gsap.set(title, { opacity: 0, y: 20 });
+  }
+
+  const textBlocks = section.querySelectorAll('.content-text-block');
+  if (textBlocks.length > 0) {
+    gsap.set(textBlocks, { opacity: 0, y: 20 });
   }
 }
 

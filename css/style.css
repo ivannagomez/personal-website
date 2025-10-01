@@ -281,6 +281,9 @@ header h1 {
   flex-direction: column;
   opacity: 0;
   transform: translateY(40px);
+  will-change: transform, opacity;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .content-title {
@@ -289,6 +292,9 @@ header h1 {
   color: #cb7d62;
   font-family: "Pixelify Sans", sans-serif;
   font-weight: 600;
+  will-change: transform, opacity;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   margin: 20px;
   letter-spacing: 4px;
   opacity: 0;
@@ -321,6 +327,9 @@ header h1 {
   max-width: 1000px;
   margin: 0px 20px;
   opacity: 0;
+  will-change: transform, opacity;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transform: translateY(25px);
 }
 
